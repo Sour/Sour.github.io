@@ -1,5 +1,7 @@
 Crafty.scene('Game', function() {
 
+   
+
   // A 2D array to keep track of all occupied tiles
   this.occupied = new Array(Game.map_grid.width);
   for (var i = 0; i < Game.map_grid.width; i++) {
@@ -42,6 +44,13 @@ Crafty.scene('Game', function() {
     }
   }
 
+  Crafty.e("2D,DOM,FPS,Text")
+    .attr({maxValues:10})
+    .css({ 'font-size', '24px' })
+    .bind("MessureFPS",function(fps){ 
+    this.text("FPS"+fps.value);
+  });
+
   this.show_victory = this.bind('VillageVisited', function() {
     if (!Crafty('Village').length) {
       Crafty.scene('Victory');
@@ -55,7 +64,7 @@ Crafty.scene('Victory', function() {
   // Display some text in celebration of the victory
   Crafty.e('2D, DOM, Text')
   .attr({ x: 0, y: 0 }) 
-  .css({"text-align=": "center"})
+  .css({"text-align", "center"})
   .text('Victory!');
 
   // Watch for the player to press a key, then restart the game

@@ -51,8 +51,8 @@ Crafty.c('Bush', {
 
 Crafty.c('PlayerCharacter', {
 	init: function() {
-		this.requires('Actor, Fourway, Color, Collision, Gravity')
-		.fourway(4)
+		this.requires('Actor, Twoway, Color, Gravity, Collision')
+		.twoway(2)
 		.color('rgb(20, 75, 40)')
 		.gravity('Solid')
 		.stopOnSolids()

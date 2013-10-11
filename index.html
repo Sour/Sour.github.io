@@ -1,51 +1,43 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset='utf-8' />
-  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-  <meta name="description" content="Leechy.INFO : " />
-
-  <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-  <title>Leechy.INFO</title>
   <script src="lib/crafty.js"></script>
   <script src="src/game.js"></script>
   <script src="src/components.js"></script>
   <script src="src/scenes.js"></script>
   <script>
-  window.addEventListener('load', Game.start);
+    window.addEventListener('load', Game.start);
   </script>
+<style type="text/css" media="screen">
+    body {
+      background: black;
+      text-align: center;
+      color: #DDD;
+      font-family: Arial;
+    }
+ 
+    .controls {
+      color: #BBB;
+    }
+ 
+    #cr-stage { margin: 20px auto 0; }
+ 
+    .bottom {
+      font-size: 12px;
+      color: #888;
+      margin-top: 50px;
+    }
+    .bottom a {
+      color: #AAA;
+    }
+  </style>
 </head>
-
 <body>
-
-  <!-- HEADER -->
-  <div id="header_wrap" class="outer">
-    <header class="inner">
-      <a id="forkme_banner" href="https://github.com/Sour">View on GitHub</a>
-
-      <h1 id="project_title">Leechy.INFO</h1>
-      <h2 id="project_tagline"></h2>
-
-    </header>
-  </div>
-
-  <!-- MAIN CONTENT -->
-  <div id="main_content_wrap" class="outer">
-    <section id="main_content" class="inner">
-      <h3>&nbsp;</h3>
-    </section>
-  </div>
-
-  <!-- FOOTER  -->
-  <div id="footer_wrap" class="outer">
-    <footer class="inner">
-      <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-    </footer>
-  </div>
-
-  
-
+  <h2>Leechy.INFO</h2>
+ 
+  <p class="controls">Controls: Use W, A, S, and D or arrow keys to move around.</p>
+ 
+  <div id="cr-stage"></div>
+ 
 </body>
 </html>
