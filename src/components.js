@@ -58,11 +58,24 @@ Crafty.c('PlayerCharacter', {
 		.css({ "text-align": "center" })
 		.twoway(2)
 		.gravity('Solid')
-		.stopOnSolids()
+		.collision()
 		.onHit('Target', this.targetObtained);
 	},
 
-	stopOnSolids: function() {
+	 stopOnSolids: function() {
+	 	// this.onHit('Solid', function() {
+	 	// 	if(this.x > obj.x) {
+
+	 	// 	}
+
+	 	// 	if(this.x < obj.x) {
+
+	 	// 	}
+	 	// });
+
+
+
+
 		this.onHit('Solid', function() {
 			this._speed = 0;
 			if(this.isDown("LEFT_ARROW"))
@@ -93,7 +106,9 @@ Crafty.c('PlayerCharacter', {
 
 Crafty.c('Target', {
 	init: function() {
-		this.requires('Actor, spr_target');
+		this.requires('Actor, spr_target, SpriteAnimation')
+		.animate('1', 0,1,3)
+		.animate('1', 12,-1);
 	},
 
 	obtain: function() {

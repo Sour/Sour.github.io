@@ -11,7 +11,6 @@ Crafty.scene('Game', function() {
 
   // Player character, placed at 5, 5 on our grid
   this.player = Crafty.e('PlayerCharacter').at(5, 5);
-  console.log("HP: " + this.player.getLife());
   this.occupied[this.player.at().x][this.player.at().y] = true;
 
   // Place a tree at every edge square on our grid of 16x16 tiles
@@ -93,7 +92,7 @@ Crafty.scene('Loading', function() {
       spr_wall:  [0, 0],
       spr_floor: [1, 0],
       spr_target:[0, 1],
-      spr_player:[1, 1]
+      spr_player:[0, 2]
     });
 
     Crafty.scene('Game');
