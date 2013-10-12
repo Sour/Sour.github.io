@@ -25,67 +25,79 @@ Crafty.c('Actor', {
 Crafty.c('Life', {
 	init: function() {
 		this.life = 100;
-		this.takeDamage = function(damage) {
-			this.life -= damage;
-			if(this.life <= 0) {
-				this.trigger('Death', damage);
-			}
-		};
+		this.alive = true;
+	},
+	getLife: function() {
+		return this.life;
+	},
+	takeDamage: function(damage) {
+		this.life -= damage;
+		if(this.live <= 0) {
+			this.alive = false;
+		}
 	}
 });
 
 
-Crafty.c('Tree', {
+Crafty.c('Wall', {
 	init: function() {
-		this.requires('Actor, Color, Solid')
-		.color('rgb(20, 125, 40)');
+		this.requires('Actor, Solid, spr_wall');
 	},
 });
 
-Crafty.c('Bush', {
+Crafty.c('Floor', {
 	init: function() {
-		this.requires('Actor, Color, Solid')
-		.color('rgb(20, 185, 40)');
+		this.requires('Actor, Solid, spr_floor');
 	},
 });
 
 Crafty.c('PlayerCharacter', {
 	init: function() {
-		this.requires('Actor, Twoway, Color, Gravity, Collision')
+		this.requires('Actor, Life, Twoway, Collision, Gravity, spr_player, Text, DOM')
+		.text(this.getLife())
+		.css({ "text-align": "center" })
 		.twoway(2)
-		.color('rgb(20, 75, 40)')
 		.gravity('Solid')
 		.stopOnSolids()
-		.onHit('Village', this.visitVillage);
+		.onHit('Target', this.targetObtained);
 	},
 
 	stopOnSolids: function() {
-		this.onHit('Solid', this.stopMovement);
+		this.onHit('Solid', function() {
+			this._speed = 0;
+			if(this.isDown("LEFT_ARROW"))
+				this.x += 2;
+			if(this.isDown("RIGHT_ARROW"))
+				this.x -= 2;
+		});
 		return this;
 	},
 
 	stopMovement: function() {
 		this._speed = 0;
+
+
 		if(this._movement) {
 			this.x -= this._movement.x;
 			this.y -= this._movement.y;
 		}
 	},
 
-	visitVillage: function(data) {
-		villlage = data[0].obj;
-		villlage.visit();
+	targetObtained: function(data) {
+		targett = data[0].obj;
+		targett.obtain();
+		this.takeDamage(15);
+		this.text(this.getLife())
 	}
 });
 
-Crafty.c('Village', {
+Crafty.c('Target', {
 	init: function() {
-		this.requires('Actor, Color')
-		.color('rgb(170, 125, 40)');
+		this.requires('Actor, spr_target');
 	},
 
-	visit: function() {
+	obtain: function() {
 		this.destroy();
-		Crafty.trigger('VillageVisited', this);
+		Crafty.trigger('TargetObtained', this);
 	}
 });
