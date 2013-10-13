@@ -88,7 +88,7 @@ Crafty.scene('Loading', function() {
   Crafty.load(['assets/16x16.gif'], function() {
 
     //load spritemap individually once they have loaded.
-    Crafty.sprite(16, 'assets/16x16.gif', {
+    Crafty.sprite(16, 'assets/16x16.png', {
       spr_wall:  [0, 0],
       spr_floor: [1, 0],
       spr_target:[0, 1],

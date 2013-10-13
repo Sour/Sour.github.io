@@ -20,6 +20,15 @@ Crafty.c('Actor', {
 	init: function() {
 		this.requires('2D, Canvas, Grid');
 	},
+
+	at: function(x, y) {
+		if (x === undefined && y === undefined) {
+			return { x: this.x/Game.map_grid.tile.width, y: this.y/Game.map_grid.tile.height }
+		} else {
+			this.attr({ x: x * Game.map_grid.tile.width, y: y * Game.map_grid.tile.height });
+			return this;
+		}
+	}
 });
 
 Crafty.c('Life', {
@@ -41,58 +50,54 @@ Crafty.c('Life', {
 
 Crafty.c('Wall', {
 	init: function() {
-		this.requires('Actor, Solid, spr_wall');
+		this.requires('Actor, Box2D, spr_wall')
+		.box2d({ bodyType: 'dynamic'});
 	},
 });
 
 Crafty.c('Floor', {
 	init: function() {
-		this.requires('Actor, Solid, spr_floor');
+		this.requires('Actor, Box2D, spr_floor')
+		.box2d({ bodyType: 'dynamic' });
 	},
 });
 
 Crafty.c('PlayerCharacter', {
 	init: function() {
-		this.requires('Actor, Life, Twoway, Collision, Gravity, spr_player, Text, DOM')
+		this.requires('Actor, Box2D, Life, Twoway, spr_player, Text, DOM')
 		.text(this.getLife())
 		.css({ "text-align": "center" })
 		.twoway(2)
-		.gravity('Solid')
-		.collision()
-		.onHit('Target', this.targetObtained);
+		.box2d({ bodyType: 'dynamic' })
+		// .onHit('Solid', this.stopOnSolid)
+		// .onHit('Target', this.targetObtained);
 	},
 
-	 stopOnSolids: function() {
-	 	// this.onHit('Solid', function() {
-	 	// 	if(this.x > obj.x) {
-
-	 	// 	}
-
-	 	// 	if(this.x < obj.x) {
-
-	 	// 	}
-	 	// });
-
-
-
-
-		this.onHit('Solid', function() {
+	stopOnSolid: function(data) {
+		box = data[0].obj;
+		if(box.x > this.x) {
 			this._speed = 0;
-			if(this.isDown("LEFT_ARROW"))
-				this.x += 2;
-			if(this.isDown("RIGHT_ARROW"))
-				this.x -= 2;
-		});
-		return this;
-	},
-
-	stopMovement: function() {
-		this._speed = 0;
-
-
-		if(this._movement) {
-			this.x -= this._movement.x;
-			this.y -= this._movement.y;
+			if(this._movement) {
+				this.x -= this._movement.x;
+			}
+		}
+		if(box.x < this.x) {
+			this._speed = 0;
+			if(this._movement) {
+				this.x -= this._movement.x;
+			}
+		}
+		if(this.y == box.y + 1) {
+			this._speed = 0;
+			if(this._movement) {
+				this.y += this._movement.y;
+			}
+		}
+		if (this.y == box.y - 1) {
+			this._speed = 0;
+			if(this._movement) {
+				this.y -= this._movement.y;
+			}
 		}
 	},
 
@@ -108,7 +113,7 @@ Crafty.c('Target', {
 	init: function() {
 		this.requires('Actor, spr_target, SpriteAnimation')
 		.animate('1', 0,1,3)
-		.animate('1', 12,-1);
+		.animate('1', 24,-1);
 	},
 
 	obtain: function() {
