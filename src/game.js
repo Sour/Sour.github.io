@@ -20,8 +20,6 @@ Game = {
 	start: function() {
 		Crafty.init(Game.width(), Game.height());
 		Crafty.background('rgb(50, 50, 50)');
-		Crafty.box2D.init(0, 10, 32, true);
-		Crafty.box2D.showDebugInfo();
 
 		Crafty.scene('Loading');
 	}

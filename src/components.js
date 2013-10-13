@@ -18,7 +18,7 @@ Crafty.c('Grid', {
 
 Crafty.c('Actor', {
 	init: function() {
-		this.requires('2D, Canvas, Grid');
+		this.requires('2D, Canvas, Grid, Collision');
 	},
 
 	at: function(x, y) {
@@ -28,6 +28,17 @@ Crafty.c('Actor', {
 			this.attr({ x: x * Game.map_grid.tile.width, y: y * Game.map_grid.tile.height });
 			return this;
 		}
+	}
+});
+
+Crafty.c('Controls', {
+	init: function() {
+		this.requires('Twoway');
+		this.enableControl();
+	},
+	Controls: function(speed, jump) {
+		this.twoway(speed, jump);
+		return this;
 	}
 });
 
@@ -50,64 +61,60 @@ Crafty.c('Life', {
 
 Crafty.c('Wall', {
 	init: function() {
-		this.requires('Actor, Box2D, spr_wall')
-		.box2d({ bodyType: 'dynamic'});
+		this.requires('Actor, Solid, spr_wall')
+		.collision();
 	},
 });
 
 Crafty.c('Floor', {
 	init: function() {
-		this.requires('Actor, Box2D, spr_floor')
-		.box2d({ bodyType: 'dynamic' });
+		this.requires('Actor, Solid, spr_floor')
+		.collision();
 	},
+
 });
 
 Crafty.c('PlayerCharacter', {
 	init: function() {
-		this.requires('Actor, Box2D, Life, Twoway, spr_player, Text, DOM')
+		this.requires('Actor, Gravity, Life, Controls, spr_player, Text, DOM')
 		.text(this.getLife())
 		.css({ "text-align": "center" })
-		.twoway(2)
-		.box2d({ bodyType: 'dynamic' })
-		// .onHit('Solid', this.stopOnSolid)
-		// .onHit('Target', this.targetObtained);
+		.Controls(2, 5)
+		.gravity('Bellow')
+		.collision()
+		.onHit('Target', this.targetObtained);
+
+		this.onHit("Solid", function(hit) {
+            for (var i = 0; i < hit.length; i++) {
+                if (hit[i].normal.y === 1) { // we hit the top or bottom of it
+                    this._up = false;
+                    this._falling = true;
+                }
+
+                if (hit[i].normal.y === -1) { // we hit the top of it
+                    this._falling = false;
+                    this._up = false;
+                    this.y = hit[i].obj.y - this.h;
+                }
+
+                if (hit[i].normal.x === 1) { // we hit the right side of it
+                    this.x = hit[i].obj.x + hit[i].obj.w;
+                }
+
+                if (hit[i].normal.x === -1) { // we hit the left side of it
+                    this.x = hit[i].obj.x - this.w;
+                }
+            }
+        });
 	},
 
-	stopOnSolid: function(data) {
-		box = data[0].obj;
-		if(box.x > this.x) {
-			this._speed = 0;
-			if(this._movement) {
-				this.x -= this._movement.x;
-			}
-		}
-		if(box.x < this.x) {
-			this._speed = 0;
-			if(this._movement) {
-				this.x -= this._movement.x;
-			}
-		}
-		if(this.y == box.y + 1) {
-			this._speed = 0;
-			if(this._movement) {
-				this.y += this._movement.y;
-			}
-		}
-		if (this.y == box.y - 1) {
-			this._speed = 0;
-			if(this._movement) {
-				this.y -= this._movement.y;
-			}
-		}
-	},
-
-	targetObtained: function(data) {
-		targett = data[0].obj;
-		targett.obtain();
-		this.takeDamage(15);
-		this.text(this.getLife())
-	}
-});
+        targetObtained: function(data) {
+        	targett = data[0].obj;
+        	targett.obtain();
+        	this.takeDamage(15);
+        	this.text(this.getLife())
+        }
+    });
 
 Crafty.c('Target', {
 	init: function() {
