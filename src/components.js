@@ -18,7 +18,7 @@ Crafty.c('Grid', {
 
 Crafty.c('Actor', {
 	init: function() {
-		this.requires('2D, Canvas, Grid, Collision');
+		this.requires('2D, Canvas, Grid');
 	},
 
 	at: function(x, y) {
@@ -33,36 +33,42 @@ Crafty.c('Actor', {
 
 Crafty.c('Controls', {
 	init: function() {
-		this.requires('Twoway');
-		this.enableControl();
-	},
-	Controls: function(speed, jump) {
-		this.twoway(speed, jump);
-		return this;
+		this.bind('KeyDown', function(e) {
+			if ( e.key === 65 ) {
+				this.x -= 16;
+			}
+			if ( e.key === 68 ) {
+				this.x += 16;
+			}
+			if( e.key === 32 ) {
+				Crafty.e('Plasma').at( Math.floor(this.x / Game.map_grid.tile.width) , Math.floor( this.y / Game.map_grid.tile.height ) - 1 );
+			}
+		});
 	}
 });
 
-Crafty.c('Life', {
+Crafty.c('Character', {
 	init: function() {
-		this.life = 100;
-		this.alive = true;
+		this.requires('Actor, Collision')
+		.collision();
 	},
-	getLife: function() {
-		return this.life;
-	},
-	takeDamage: function(damage) {
-		this.life -= damage;
-		if(this.live <= 0) {
-			this.alive = false;
-		}
+	destory: function() {
+		this.destory();
 	}
 });
 
+Crafty.c('Plasma', {
+	init: function() {
+		this.requires('Actor, Solid, spr_plasma');
+		this.bind('EnterFrame', function(dt) {
+			this.y -= dt.dt / 8
+		});
+	},
+});
 
 Crafty.c('Wall', {
 	init: function() {
-		this.requires('Actor, Solid, spr_wall')
-		.collision();
+		this.requires('Actor, Solid, spr_wall');
 	},
 });
 
@@ -76,55 +82,7 @@ Crafty.c('Floor', {
 
 Crafty.c('PlayerCharacter', {
 	init: function() {
-		this.requires('Actor, Gravity, Life, Controls, spr_player, Text, DOM')
-		.text(this.getLife())
-		.css({ "text-align": "center" })
-		.Controls(2, 5)
-		.gravity('Bellow')
-		.collision()
-		.onHit('Target', this.targetObtained);
+		this.requires('Character, spr_player, Controls');
 
-		this.onHit("Solid", function(hit) {
-            for (var i = 0; i < hit.length; i++) {
-                if (hit[i].normal.y === 1) { // we hit the top or bottom of it
-                    this._up = false;
-                    this._falling = true;
-                }
-
-                if (hit[i].normal.y === -1) { // we hit the top of it
-                    this._falling = false;
-                    this._up = false;
-                    this.y = hit[i].obj.y - this.h;
-                }
-
-                if (hit[i].normal.x === 1) { // we hit the right side of it
-                    this.x = hit[i].obj.x + hit[i].obj.w;
-                }
-
-                if (hit[i].normal.x === -1) { // we hit the left side of it
-                    this.x = hit[i].obj.x - this.w;
-                }
-            }
-        });
 	},
-
-        targetObtained: function(data) {
-        	targett = data[0].obj;
-        	targett.obtain();
-        	this.takeDamage(15);
-        	this.text(this.getLife())
-        }
-    });
-
-Crafty.c('Target', {
-	init: function() {
-		this.requires('Actor, spr_target, SpriteAnimation')
-		.animate('1', 0,1,3)
-		.animate('1', 24,-1);
-	},
-
-	obtain: function() {
-		this.destroy();
-		Crafty.trigger('TargetObtained', this);
-	}
 });
