@@ -4,6 +4,7 @@ Crafty.scene('LevelOne', function() {
  // Player 
  this.player = Crafty.e('Player').at(15, 35);
 
+//test Enemy
  this.enemy = Crafty.e('Enemy').at(15,10);
 
 });

@@ -1,4 +1,4 @@
-var options = {
+var particleThrust = {
 	maxParticles: 150,
 	size: 16,
 	sizeRandom: 0,
@@ -26,6 +26,36 @@ var options = {
     gravity: { x: 0, y: 1 },
     // sensible values are 0-3
     jitter: 0
+}
+
+var particleDestory = {
+	maxParticles: 150,
+	size: 8,
+	sizeRandom: 0,
+	speed: 5,
+	speedRandom: 1.2,
+    // Lifespan in frames
+    lifeSpan: 5,
+    lifeSpanRandom: 4,
+    // Angle is calculated clockwise: 12pm is 0deg, 3pm is 90deg etc.
+    angle: 0,
+    angleRandom: 360,
+    startColour: [127, 0, 143, 1],
+    startColourRandom: [160, 0, 155, 0],
+    endColour: [245, 35, 0, 0],
+    endColourRandom: [60, 60, 60, 0],
+    // Only applies when fastMode is off, specifies how sharp the gradients are drawn
+    sharpness: 20,
+    sharpnessRandom: 10,
+    // Random spread from origin
+    spread: 16,
+    // How many frames should this last
+    duration: 10,
+    // Will draw squares instead of circle gradients
+    fastMode: true,
+    gravity: { x: 0, y: 0 },
+    // sensible values are 0-3
+    jitter: 1
 }
 
 Crafty.c('Grid', {
@@ -133,7 +163,7 @@ Crafty.c('Plasma', {
 Crafty.c('Player', {
 	init: function() {
 		this.requires('Character, spr_player, Controls');
-		var pcParticles = Crafty.e("Actor, 2D,Canvas,Particles").particles(options);
+		var pcParticles = Crafty.e("Actor, Particles").particles(particleThrust);
 		this.bind('EnterFrame', function(dt) {
 			pcParticles.x = this.x;
 			pcParticles.y = this.y + 16;
@@ -144,11 +174,12 @@ Crafty.c('Player', {
 
 Crafty.c('Enemy', {
 	init: function() {
-		this.requires('Character, spr_target, Solid');
+		this.requires('Character, spr_enemy, Solid');
 		console.log(this.getLife());
 		this.bind('EnterFrame', function() {
 			if(!this.isAlive()) {
 				this.destroy();
+				var tempParticles = Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 			}
 		});
 	},
