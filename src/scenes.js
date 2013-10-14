@@ -1,5 +1,40 @@
 Crafty.scene('Game', function() {
 
+
+
+  var options = {
+    maxParticles: 150,
+    size: 16,
+    sizeRandom: 0,
+    speed: 1,
+    speedRandom: 1.2,
+    // Lifespan in frames
+    lifeSpan: 29,
+    lifeSpanRandom: 7,
+    // Angle is calculated clockwise: 12pm is 0deg, 3pm is 90deg etc.
+    angle: 0,
+    angleRandom: 34,
+    startColour: [255, 131, 0, 1],
+    startColourRandom: [48, 50, 45, 0],
+    endColour: [245, 35, 0, 0],
+    endColourRandom: [60, 60, 60, 0],
+    // Only applies when fastMode is off, specifies how sharp the gradients are drawn
+    sharpness: 20,
+    sharpnessRandom: 10,
+    // Random spread from origin
+    spread: 10,
+    // How many frames should this last
+    duration: -1,
+    // Will draw squares instead of circle gradients
+    fastMode: false,
+    gravity: { x: 0, y: 1 },
+    // sensible values are 0-3
+    jitter: 0
+}
+
+Crafty.e("Actor, 2D,Canvas,Particles").particles(options).at(15,36);
+
+
   // Player 
   this.player = Crafty.e('PlayerCharacter').at(15, 35);
 

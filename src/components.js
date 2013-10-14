@@ -33,16 +33,15 @@ Crafty.c('Actor', {
 
 Crafty.c('Controls', {
 	init: function() {
-		this.bind('KeyDown', function(e) {
-			if ( e.key === 65 ) {
-				this.x -= 16;
-			}
-			if ( e.key === 68 ) {
-				this.x += 16;
-			}
-			if( e.key === 32 ) {
-				Crafty.e('Plasma').at( Math.floor(this.x / Game.map_grid.tile.width) , Math.floor( this.y / Game.map_grid.tile.height ) - 1 );
-			}
+		this.requires('Multiway')
+		.multiway( 3, { A: 180, D: 0 })
+		.enableControl();
+		this.bind('EventFrame', function() {
+			this.bind('KeyDown', function(e) {
+				if( e.key === 32 ) {
+					Crafty.e('Plasma').create( this.x, this.y  - 10 );
+				}
+			});
 		});
 	}
 });
@@ -59,10 +58,21 @@ Crafty.c('Character', {
 
 Crafty.c('Plasma', {
 	init: function() {
-		this.requires('Actor, Solid, spr_plasma');
+		this.requires('Actor, Collision, Solid, spr_plasma');
+	},
+	create: function(x, y, speed) {
+		this.attr({
+			x: x,
+			y: y,
+			w: Game.map_grid.tile.width,
+			h: Game.map_grid.tile.height
+		});
+		this.collision();
 		this.bind('EnterFrame', function(dt) {
 			this.y -= dt.dt / 8
+			console.log(this.y);
 		});
+		return this;
 	},
 });
 
