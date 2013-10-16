@@ -96,8 +96,8 @@ Crafty.c('Character', {
 		this.requires('Actor, Collision, Life')
 		.collision();
 	},
-	destory: function() {
-		this.destory();
+	particleDestroy: function() {
+		this.destroy();
 	},
 });
 
@@ -123,11 +123,11 @@ Crafty.c('Life', {
 Crafty.c('Controls', {
 	init: function() {
 		this.requires('Multiway')
-		.multiway( 5, { A: 180, D: 0 })
+		.multiway( 8, { A: 180, D: 0 })
 		.enableControl();
 		this.bind('KeyDown', function(e) {
 			if( e.key === 32 ) {
-				Crafty.e('Plasma').create( this.x, this.y  - 10, 3);
+				Crafty.e('Plasma').create( this.x, this.y  - 16, 3);
 			}
 		});
 	}
@@ -137,13 +137,11 @@ Crafty.c('Plasma', {
 	init: function() {
 		this.requires('Collision');
 		this.bind('EnterFrame', function(dt) {
-			this.y -= dt.dt / 8
+			this.y -= dt.dt / 5
 		});
 		this.onHit('Solid', function(hit) {
 			this.destroy();
-			hit[0].obj.takeDamage(10);
-			console.log(hit[0].obj.getLife());
-			// hit[0].takeDamage(10);
+			hit[0].obj.takeDamage(25);
 		});
 	},
 	create: function(x, y, speed) {
@@ -169,6 +167,20 @@ Crafty.c('Player', {
 			pcParticles.y = this.y + 16;
 		});
 
+		this.onHit("Solid", function(hit) {
+			console.log(this.getLife());
+			if(hit[0].obj.getName() == "enemy")
+			{
+				this.takeDamage(50);
+				hit[0].obj.takeDamage(100);
+			}
+			if( !this.isAlive() ) {
+				this.particleDestroy();
+				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
+				pcParticles.destroy();
+				setTimeout(function() { Crafty.scene('GameOver'); }, 1500);
+			}
+		});
 	},
 });
 
@@ -176,11 +188,22 @@ Crafty.c('Enemy', {
 	init: function() {
 		this.requires('Character, spr_enemy, Solid');
 		console.log(this.getLife());
-		this.bind('EnterFrame', function() {
+		this.isMoving = true;
+		this.bind('EnterFrame', function(dt) {
 			if(!this.isAlive()) {
+				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 				this.destroy();
-				var tempParticles = Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
+			}
+			if(this.isMoving == true) {
+				this.y += 16 * dt.dt / 100;
 			}
 		});
+	},
+	setName: function(name) {
+		this.name = name;
+	},
+
+	getName: function() {
+		return this.name;
 	},
 });

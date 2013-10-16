@@ -1,15 +1,5 @@
-Crafty.scene('LevelOne', function() {
-
-
- // Player 
- this.player = Crafty.e('Player').at(15, 35);
-
-//test Enemy
- this.enemy = Crafty.e('Enemy').at(15,10);
-
-});
-
 Crafty.scene('Loading', function() {
+
 
   Crafty.e('2D, DOM, Text')
   .text('Loading...')
@@ -33,3 +23,33 @@ Crafty.scene('Loading', function() {
     Crafty.scene('LevelOne');
   })
 });
+
+Crafty.scene('LevelOne', function() {
+
+  var enemySpawn = 0;
+
+ // Player initalize
+ Crafty.e('Player').at(15, 35);
+
+ console.log("start");
+ Crafty.e("Delay").delay(function() {
+  console.log("1000ms later");
+  Crafty.e('Enemy').at( ( ( Math.random() * 31 ) + 1), 0 ).setName("enemy");
+}, 1000, 20);
+
+
+});
+
+Crafty.scene('Victory', function() {
+  Crafty.e('Grid, DOM, Text')
+  .text("You have survived!")
+  .attr({ x: 0, y: Game.height() / 2 - 24, w: Game.width() })
+  .css($text_css);
+});
+
+Crafty.scene('GameOver', function() {
+  Crafty.e('Grid, DOM, Text')
+  .text("You have lost!")
+  .attr({ x: 0, y: Game.height() / 2 - 24, w: Game.width() })
+  .css($text_css);
+})
