@@ -1,6 +1,6 @@
 var particleThrust = {
 	maxParticles: 150,
-	size: 16,
+	size: 8,
 	sizeRandom: 0,
 	speed: 5,
 	speedRandom: 1.2,
@@ -120,14 +120,33 @@ Crafty.c('Life', {
 	}
 });
 
+Crafty.c('Score', {
+	init: function() {
+		this.requires('2D, DOM, Text')
+		.attr({ x:0, y:20 })
+		.textFont({ size: '20px', weight: 'bold' });
+		this.score = 0;
+
+		this.bind('EnterFrame', function(dt) {
+			this.text(this.getScore());
+		});
+	},
+	updateScore: function(score) {
+		this.score += score;
+	},
+	getScore: function() {
+		return this.score;
+	},
+});
+
 Crafty.c('Controls', {
 	init: function() {
 		this.requires('Multiway')
-		.multiway( 8, { A: 180, D: 0 })
+		.multiway( 8, { A: 180, D: 0, LEFT_ARROW:180, RIGHT_ARROW:0 })
 		.enableControl();
 		this.bind('KeyDown', function(e) {
 			if( e.key === 32 ) {
-				Crafty.e('Plasma').create( this.x, this.y  - 16, 3);
+				Crafty.e('Plasma').create( this.x, this.y  - 16, 3, this);
 			}
 		});
 	}
@@ -141,11 +160,16 @@ Crafty.c('Plasma', {
 		});
 		this.onHit('Solid', function(hit) {
 			this.destroy();
-			hit[0].obj.takeDamage(25);
+			hit[0].obj.takeDamage(100);
+			if(!hit[0].obj.isAlive()) {
+				console.log(this.owner.getScore());
+				this.owner.updateScore(100);
+			}
 		});
 	},
-	create: function(x, y, speed) {
+	create: function(x, y, speed, owner) {
 		this.addComponent( 'Actor, Collision, Solid, spr_plasma' )
+		this.owner = owner
 		this.attr({
 			x: x,
 			y: y,
@@ -160,12 +184,16 @@ Crafty.c('Plasma', {
 
 Crafty.c('Player', {
 	init: function() {
-		this.requires('Character, spr_player, Controls');
+		this.requires('Character, spr_player, Controls, Score');
+
 		var pcParticles = Crafty.e("Actor, Particles").particles(particleThrust);
+
 		this.bind('EnterFrame', function(dt) {
-			pcParticles.x = this.x;
+			pcParticles.x = this.x + 4;
 			pcParticles.y = this.y + 16;
+			this.text(this.getScore());
 		});
+
 
 		this.onHit("Solid", function(hit) {
 			console.log(this.getLife());
@@ -187,7 +215,6 @@ Crafty.c('Player', {
 Crafty.c('Enemy', {
 	init: function() {
 		this.requires('Character, spr_enemy, Solid');
-		console.log(this.getLife());
 		this.isMoving = true;
 		this.bind('EnterFrame', function(dt) {
 			if(!this.isAlive()) {

@@ -26,14 +26,13 @@ Crafty.scene('Loading', function() {
 
 Crafty.scene('LevelOne', function() {
 
-  var enemySpawn = 0;
+
+  Crafty.e('Player').at(15, 35);
+  
 
  // Player initalize
- Crafty.e('Player').at(15, 35);
 
- console.log("start");
  Crafty.e("Delay").delay(function() {
-  console.log("1000ms later");
   Crafty.e('Enemy').at( ( ( Math.random() * 31 ) + 1), 0 ).setName("enemy");
 }, 1000, 20);
 
