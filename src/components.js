@@ -185,13 +185,26 @@ Crafty.c('Player', {
 	init: function() {
 		this.requires('Character, spr_player, Controls, Score');
 
-		var pcParticles = Crafty.e("Actor, Particles").particles(particleThrust);
-		var pcScore = Crafty.e("2D, DOM, Text").attr({ x:0, y:0 }).textFont({ size: '20px', weight: 'bold' });
+		var pcParticles = Crafty.e("Actor, Particles")
+		.particles(particleThrust);
+
+		var pcScore = Crafty.e("2D, DOM, Text")
+		.attr({ x:0, y:0 })
+		.textFont({ size: '20px', weight: 'bold', align: 'center' });
+
+		var pcLifeBar = Crafty.e('2D, DOM, Color, Text')
+		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
+		.color('rgb(0, 150, 0)')
+		.text(this.getLife())
+		.css({"text-align":"center","display":"inline-block","vertical-align":"middle"});
 
 		this.bind('EnterFrame', function(dt) {
 			pcParticles.x = this.x + 4;
 			pcParticles.y = this.y + 16;
 			pcScore.text(this.getScore());
+			pcLifeBar.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: ((Game.map_grid.width * Game.map_grid.tile.width) * (this.getLife()) / 100), h:16 });
+			pcLifeBar.text(this.getLife());
+
 		});
 		this.onHit("Solid", function(hit) {
 			if(hit[0].obj.getName() == "enemy")
