@@ -257,7 +257,8 @@ Crafty.c('Player', {
 		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
 		.color('#63C788')
 		.text(this.getLife())
-		.css({"text-align":"center","display":"inline-block","vertical-align":"middle"});
+		.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
+		.textFont({size:'12px', weight: 'bold'});
 
 		
 
