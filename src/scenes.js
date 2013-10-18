@@ -40,10 +40,13 @@ Crafty.scene('LevelOne', function() {
   // Create Player Object
   Crafty.e('Player').at(15, 35);
 
+  var it = 0;
   //Create enemy spawns every xxxxms
   Crafty.e("Delay").delay(function() {
     Crafty.e('Enemy').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
-  }, 1000, 20);
+    console.log(it);
+    it++;
+  }, 1000, -1);
 
 
 });
