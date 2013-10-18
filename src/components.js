@@ -91,6 +91,13 @@ Crafty.c('Actor', {
 	}
 });
 
+Crafty.c('Wall', {
+	init: function() {
+		this.requires('Actor, Collision')
+		.collision();
+	},
+});
+
 Crafty.c('Character', {
 	init: function() {
 		this.requires('Actor, Collision, Life')
@@ -122,14 +129,7 @@ Crafty.c('Life', {
 
 Crafty.c('Score', {
 	init: function() {
-		this.requires('2D, DOM, Text')
-		.attr({ x:0, y:20 })
-		.textFont({ size: '20px', weight: 'bold' });
 		this.score = 0;
-
-		this.bind('EnterFrame', function(dt) {
-			this.text(this.getScore());
-		});
 	},
 	updateScore: function(score) {
 		this.score += score;
@@ -158,13 +158,15 @@ Crafty.c('Plasma', {
 		this.bind('EnterFrame', function(dt) {
 			this.y -= dt.dt / 5
 		});
-		this.onHit('Solid', function(hit) {
+		this.onHit('Life', function(hit) {
 			this.destroy();
 			hit[0].obj.takeDamage(100);
 			if(!hit[0].obj.isAlive()) {
-				console.log(this.owner.getScore());
 				this.owner.updateScore(100);
 			}
+		});
+		this.onHit('Wall', function(hit) {
+			this.destroy();
 		});
 	},
 	create: function(x, y, speed, owner) {
@@ -177,9 +179,6 @@ Crafty.c('Plasma', {
 			h: Game.map_grid.tile.height
 		});
 	},
-	destory: function() {
-		this.destroy();
-	}
 });
 
 Crafty.c('Player', {
@@ -187,16 +186,14 @@ Crafty.c('Player', {
 		this.requires('Character, spr_player, Controls, Score');
 
 		var pcParticles = Crafty.e("Actor, Particles").particles(particleThrust);
+		var pcScore = Crafty.e("2D, DOM, Text").attr({ x:0, y:0 }).textFont({ size: '20px', weight: 'bold' });
 
 		this.bind('EnterFrame', function(dt) {
 			pcParticles.x = this.x + 4;
 			pcParticles.y = this.y + 16;
-			this.text(this.getScore());
+			pcScore.text(this.getScore());
 		});
-
-
 		this.onHit("Solid", function(hit) {
-			console.log(this.getLife());
 			if(hit[0].obj.getName() == "enemy")
 			{
 				this.takeDamage(50);
@@ -209,6 +206,21 @@ Crafty.c('Player', {
 				setTimeout(function() { Crafty.scene('GameOver'); }, 1500);
 			}
 		});
+
+		this.onHit("Wall", function(hit) {
+			for (var i = 0; i < hit.length; i++) {
+
+            	//Right side of PlayerCharacter hit
+            	if (hit[i].normal.x === 1) {
+            		this.x = hit[i].obj.x + hit[i].obj.w;
+            	}
+
+                //Left side of PlayerCharacter hit
+                if (hit[i].normal.x === -1) {
+                	this.x = hit[i].obj.x - this.w;
+                }
+            }
+        });
 	},
 });
 
@@ -225,6 +237,9 @@ Crafty.c('Enemy', {
 				this.y += 16 * dt.dt / 100;
 			}
 		});
+		this.onHit('Wall', function() {
+			this.destroy();
+		})
 	},
 	setName: function(name) {
 		this.name = name;

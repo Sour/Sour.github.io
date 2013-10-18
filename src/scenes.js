@@ -26,15 +26,24 @@ Crafty.scene('Loading', function() {
 
 Crafty.scene('LevelOne', function() {
 
+  //create boundries for canvas.
+  for (var x = -1; x <= Game.map_grid.width; x++) {
+    for (var y = -1; y <= Game.map_grid.height; y++) {
+      var at_edge = x == -1 || x == Game.map_grid.width || y == -1 || y == Game.map_grid.height;
 
+      if (at_edge) {
+        Crafty.e('Wall').at(x, y);
+      } 
+    }
+  }
+
+  // Create Player Object
   Crafty.e('Player').at(15, 35);
-  
 
- // Player initalize
-
- Crafty.e("Delay").delay(function() {
-  Crafty.e('Enemy').at( ( ( Math.random() * 31 ) + 1), 0 ).setName("enemy");
-}, 1000, 20);
+  //Create enemy spawns every xxxxms
+  Crafty.e("Delay").delay(function() {
+    Crafty.e('Enemy').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
+  }, 1000, 20);
 
 
 });
