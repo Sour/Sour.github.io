@@ -1,36 +1,36 @@
 var particleThrust = {
 	maxParticles: 150,
-	size: 8,
+	size: 5,
 	sizeRandom: 0,
 	speed: 5,
 	speedRandom: 1.2,
     // Lifespan in frames
-    lifeSpan: 29,
-    lifeSpanRandom: 7,
+    lifeSpan: 10,
+    lifeSpanRandom: 5,
     // Angle is calculated clockwise: 12pm is 0deg, 3pm is 90deg etc.
     angle: 180,
-    angleRandom: 34,
+    angleRandom: 10,
     startColour: [255, 131, 0, 1],
     startColourRandom: [48, 50, 45, 0],
     endColour: [245, 35, 0, 0],
     endColourRandom: [60, 60, 60, 0],
     // Only applies when fastMode is off, specifies how sharp the gradients are drawn
-    sharpness: 20,
+    sharpness: 0,
     sharpnessRandom: 10,
     // Random spread from origin
-    spread: 5,
+    spread: 1,
     // How many frames should this last
     duration: -1,
     // Will draw squares instead of circle gradients
     fastMode: true,
-    gravity: { x: 0, y: 1 },
+    gravity: { x: 0, y: 0 },
     // sensible values are 0-3
     jitter: 0
 }
 
 var particleDestory = {
 	maxParticles: 150,
-	size: 8,
+	size: 5,
 	sizeRandom: 0,
 	speed: 5,
 	speedRandom: 1.2,
@@ -48,7 +48,7 @@ var particleDestory = {
     sharpness: 20,
     sharpnessRandom: 10,
     // Random spread from origin
-    spread: 16,
+    spread: 10,
     // How many frames should this last
     duration: 10,
     // Will draw squares instead of circle gradients
@@ -56,6 +56,36 @@ var particleDestory = {
     gravity: { x: 0, y: 0 },
     // sensible values are 0-3
     jitter: 1
+}
+
+var particlePlasma = {
+	maxParticles: 100,
+	size: 2,
+	sizeRandom: 0,
+	speed: 2,
+	speedRandom: 1.2,
+    // Lifespan in frames
+    lifeSpan: 10,
+    lifeSpanRandom: 2,
+    // Angle is calculated clockwise: 12pm is 0deg, 3pm is 90deg etc.
+    angle: 0,
+    angleRandom: 45,
+    startColour: [126, 188, 211, 1],
+    startColourRandom: [90, 50, 200, 0],
+    endColour: [50, 50, 90, 0],
+    endColourRandom: [30, 60, 60, 0],
+    // Only applies when fastMode is off, specifies how sharp the gradients are drawn
+    sharpness: 20,
+    sharpnessRandom: 10,
+    // Random spread from origin
+    spread: 5,
+    // How many frames should this last
+    duration: 5,
+    // Will draw squares instead of circle gradients
+    fastMode: true,
+    gravity: { x: 0, y: 0 },
+    // sensible values are 0-3
+    jitter: 0
 }
 
 Crafty.c('Grid', {
@@ -80,15 +110,6 @@ Crafty.c('Actor', {
 	init: function() {
 		this.requires('2D, Canvas, Grid');
 	},
-
-	at: function(x, y) {
-		if (x === undefined && y === undefined) {
-			return { x: this.x/Game.map_grid.tile.width, y: this.y/Game.map_grid.tile.height }
-		} else {
-			this.attr({ x: x * Game.map_grid.tile.width, y: y * Game.map_grid.tile.height });
-			return this;
-		}
-	}
 });
 
 Crafty.c('Wall', {
@@ -211,6 +232,9 @@ Crafty.c('Plasma', {
 			w: Game.map_grid.tile.width,
 			h: Game.map_grid.tile.height
 		});
+		Crafty.e('Actor, Particles')
+		.particles(particlePlasma)
+		.attr({ x:x + 8, y:y + 8 });
 	},
 });
 
@@ -225,16 +249,24 @@ Crafty.c('Player', {
 		.attr({ x:0, y:0 })
 		.textFont({ size: '20px', weight: 'bold', align: 'center' });
 
+		Crafty.e('2D, DOM, Color')
+		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
+		.color('#ff5959');
+
 		var pcLifeBar = Crafty.e('2D, DOM, Color, Text')
 		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
-		.color('rgb(0, 150, 0)')
+		.color('#63C788')
 		.text(this.getLife())
 		.css({"text-align":"center","display":"inline-block","vertical-align":"middle"});
 
+		
+
 		this.bind('EnterFrame', function(dt) {
-			pcParticles.x = this.x + 4;
-			pcParticles.y = this.y + 16;
+			pcParticles.x = this.x + 5.5;
+			pcParticles.y = this.y + 13;
+
 			pcScore.text(this.getScore());
+
 			pcLifeBar.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: ((Game.map_grid.width * Game.map_grid.tile.width) * (this.getLife()) / 100), h:16 });
 			pcLifeBar.text(this.getLife());
 
@@ -260,18 +292,14 @@ Crafty.c('Player', {
 
 		this.onHit("Wall", function(hit) {
 			for (var i = 0; i < hit.length; i++) {
-
-            	//Right side of PlayerCharacter hit
-            	if (hit[i].normal.x === 1) {
-            		this.x = hit[i].obj.x + hit[i].obj.w;
-            	}
-
-                //Left side of PlayerCharacter hit
-                if (hit[i].normal.x === -1) {
-                	this.x = hit[i].obj.x - this.w;
-                }
-            }
-        });
+				if (hit[i].normal.x === 1) {
+					this.x = hit[i].obj.x + hit[i].obj.w;
+				}
+				if (hit[i].normal.x === -1) {
+					this.x = hit[i].obj.x - this.w;
+				}
+			}
+		});
 	},
 });
 
