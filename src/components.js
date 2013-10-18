@@ -121,6 +121,9 @@ Crafty.c('Life', {
 		if(this.life <= 0) {
 			this.alive = false;
 		}
+		if(this.life > 100) {
+			this.life = 100;
+		}
 	},
 	isAlive: function() {
 		return this.alive;
@@ -150,6 +153,36 @@ Crafty.c('Controls', {
 			}
 		});
 	}
+});
+
+Crafty.c('LifeOrb', {
+	init: function() {
+		this.requires('Collision')
+		.collision();
+		this.bind('EnterFrame', function(dt) {
+			this.y += dt.dt / 15;
+		});
+		this.onHit('Life', function(hit) {
+			this.destroy();
+			hit[0].obj.takeDamage(-10);
+		});
+		this.onHit('Wall', function(hit) {
+			this.destroy();
+		});
+	},
+	create: function(x, y) {
+		this.addComponent( 'Actor, Collision, Solid, spr_life_orb' )
+		.name = "health";
+		this.attr({
+			x: x,
+			y: y,
+			w: Game.map_grid.tile.width,
+			h: Game.map_grid.tile.height
+		});
+	},
+	getName: function() {
+		return this.name;
+	},
 });
 
 Crafty.c('Plasma', {
@@ -209,8 +242,13 @@ Crafty.c('Player', {
 		this.onHit("Solid", function(hit) {
 			if(hit[0].obj.getName() == "enemy")
 			{
-				this.takeDamage(50);
+				this.takeDamage(30);
 				hit[0].obj.takeDamage(100);
+			}
+			if(hit[0].obj.getName() == "health")
+			{
+				this.takeDamage(-10);
+				hit[0].obj.destroy();
 			}
 			if( !this.isAlive() ) {
 				this.particleDestroy();
@@ -245,6 +283,9 @@ Crafty.c('Enemy', {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 				this.destroy();
+				if(Math.random() < 0.05) {
+					Crafty.e('LifeOrb').create(this.x,this.y);
+				}
 			}
 			if(this.isMoving == true) {
 				this.y += 16 * dt.dt / 100;

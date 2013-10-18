@@ -17,7 +17,8 @@ Crafty.scene('Loading', function() {
       spr_target:     [2, 0],
       spr_player:     [3, 0],
       spr_plasma:     [0, 1],
-      spr_enemy:      [1, 1]
+      spr_enemy:      [1, 1],
+      spr_life_orb:   [2, 1]
     });
 
     Crafty.scene('LevelOne');
