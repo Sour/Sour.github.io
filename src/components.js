@@ -234,7 +234,7 @@ Crafty.c('Plasma', {
 		});
 		Crafty.e('Actor, Particles')
 		.particles(particlePlasma)
-		.attr({ x:x + 8, y:y + 8 });
+		.attr({ x:x + 8, y:y + 12 });
 	},
 });
 
