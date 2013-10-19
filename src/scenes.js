@@ -114,7 +114,7 @@ Crafty.scene('LevelTwo', function() {
 
 Crafty.scene('Victory', function() {
 	Crafty.e('Grid, DOM, Text')
-	.text("You have survived!")
+	.text("You have won!")
 	.attr({ x: 0, y: Game.height() / 2 - 24, w: Game.width() })
 	.css($text_css);
 });
