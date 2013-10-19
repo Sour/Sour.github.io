@@ -332,3 +332,32 @@ Crafty.c('Enemy', {
 		return this.name;
 	},
 });
+
+Crafty.c('TierTwo', {
+	init: function() {
+		this.requires('Character, spr_enemy_tier_two, Solid');
+		this.isMoving = true;
+		this.bind('EnterFrame', function(dt) {
+			if(!this.isAlive()) {
+				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
+				this.destroy();
+				if(Math.random() < 0.05) {
+					Crafty.e('LifeOrb').create(this.x,this.y);
+				}
+			}
+			if(this.isMoving == true) {
+				this.y += 20 * dt.dt / 100;
+			}
+		});
+		this.onHit('Wall', function() {
+			this.destroy();
+		})
+	},
+	setName: function(name) {
+		this.name = name;
+	},
+
+	getName: function() {
+		return this.name;
+	},
+});
