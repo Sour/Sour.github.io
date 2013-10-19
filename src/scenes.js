@@ -13,17 +13,17 @@ Crafty.scene('Loading', function() {
 
     //load spritemap individually once they have loaded.
     Crafty.sprite(16, 'assets/16x16.png', {
-    	spr_wall:            [0, 0],
+    	spr_plasma:          [0, 0],
     	spr_background:      [1, 0],
     	spr_target:          [2, 0],
     	spr_player:          [3, 0],
-    	spr_plasma:          [0, 1],
+    	spr_plasma_blue:     [0, 1],
     	spr_enemy:           [1, 1],
     	spr_life_orb:        [2, 1],
     	spr_enemy_tier_two:  [3, 1]
     });
 
-    Crafty.sprite(48, 'assets/16x16.png', {
+    Crafty.sprite(48, 32, 'assets/16x16.png', {
     	spr_player_fixed: [0, 1]
     });
 
@@ -52,11 +52,9 @@ Crafty.scene('LevelOne', function() {
   	Crafty.e('Enemy').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
   	console.log(it);
   	it++;
-  }, 1000, -1);
+  }, 1000, 24);
 
-  setTimeout(function() { 
-  	console.log('timeout success - destorying delay');
-  	Game.Delay.destroy(); 
+  setTimeout(function() {
 
   	Crafty.e('Grid, DOM, Text')
 	.text("You have survived level one!")
@@ -66,7 +64,7 @@ Crafty.scene('LevelOne', function() {
   	setTimeout(function() { 
   		Crafty.scene('LevelTwo');
   	}, 5000);
-  }, 25000);
+  }, 30000);
 });
 
 Crafty.scene('LevelTwo', function() {
@@ -95,11 +93,9 @@ Crafty.scene('LevelTwo', function() {
   	
   	console.log(it);
   	it++;
-  }, 1000, -1);
+  }, 1000, 49);
 
-  setTimeout(function() { 
-  	console.log('timeout success - destorying delay');
-  	Game.Delay.destroy(); 
+  setTimeout(function() {
 
   	Crafty.e('Grid, DOM, Text')
 	.text("You have survived level two!")
@@ -109,7 +105,7 @@ Crafty.scene('LevelTwo', function() {
   	setTimeout(function() { 
   		Crafty.scene('Victory');
   	}, 5000);
-  }, 50000);
+  }, 55000);
 });
 
 Crafty.scene('Victory', function() {

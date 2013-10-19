@@ -1,5 +1,5 @@
 var particleThrust = {
-	maxParticles: 150,
+	maxParticles: 50,
 	size: 5,
 	sizeRandom: 0,
 	speed: 5,
@@ -29,7 +29,7 @@ var particleThrust = {
 }
 
 var particleDestory = {
-	maxParticles: 150,
+	maxParticles: 75,
 	size: 5,
 	sizeRandom: 0,
 	speed: 5,
@@ -48,18 +48,18 @@ var particleDestory = {
     sharpness: 20,
     sharpnessRandom: 10,
     // Random spread from origin
-    spread: 10,
+    spread: 5,
     // How many frames should this last
     duration: 10,
     // Will draw squares instead of circle gradients
     fastMode: true,
     gravity: { x: 0, y: 0 },
     // sensible values are 0-3
-    jitter: 1
+    jitter: 3
 }
 
 var particlePlasma = {
-	maxParticles: 100,
+	maxParticles: 20,
 	size: 2,
 	sizeRandom: 0,
 	speed: 2,
@@ -70,10 +70,10 @@ var particlePlasma = {
     // Angle is calculated clockwise: 12pm is 0deg, 3pm is 90deg etc.
     angle: 0,
     angleRandom: 45,
-    startColour: [126, 188, 211, 1],
-    startColourRandom: [90, 50, 200, 0],
-    endColour: [50, 50, 90, 0],
-    endColourRandom: [30, 60, 60, 0],
+    startColour: [255, 131, 0, 1],
+    startColourRandom: [48, 50, 45, 0],
+    endColour: [245, 35, 0, 0],
+    endColourRandom: [60, 60, 60, 0],
     // Only applies when fastMode is off, specifies how sharp the gradients are drawn
     sharpness: 20,
     sharpnessRandom: 10,
@@ -242,8 +242,7 @@ Crafty.c('Plasma', {
 
 Crafty.c('Player', {
 	init: function() {
-		this.requires('Character, spr_player_fixed, Controls, Score')
-		.collision([0,0], [48,0], [48,32], [0,32]);
+		this.requires('Character, spr_player_fixed, Controls, Score');
 
 		var pcParticles = Crafty.e("Actor, Particles")
 		.particles(particleThrust);
