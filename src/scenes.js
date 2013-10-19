@@ -8,6 +8,7 @@ Crafty.scene('Loading', function() {
 
 
   //load spritemap
+
   Crafty.load(['assets/16x16.png'], function() {
 
     //load spritemap individually once they have loaded.
@@ -20,6 +21,10 @@ Crafty.scene('Loading', function() {
     	spr_enemy:           [1, 1],
     	spr_life_orb:        [2, 1],
     	spr_enemy_tier_two:  [3, 1]
+    });
+
+    Crafty.sprite(48, 'assets/16x16.png', {
+    	spr_player_fixed: [0, 1]
     });
 
     Crafty.scene('LevelOne');
@@ -39,7 +44,7 @@ Crafty.scene('LevelOne', function() {
   }
 
   // Create Player Object
-  Crafty.e('Player').at(15, 35);
+  Crafty.e('Player').at(14, 35);
 
   var it = 0;
   //Create enemy spawns every xxxxms

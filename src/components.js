@@ -171,6 +171,7 @@ Crafty.c('Controls', {
 		this.bind('KeyDown', function(e) {
 			if( e.key === 32 ) {
 				Crafty.e('Plasma').create( this.x, this.y  - 16, 3, this);
+				Crafty.e('Plasma').create( this.x + 32, this.y  - 16, 3, this);
 			}
 		});
 	}
@@ -224,8 +225,8 @@ Crafty.c('Plasma', {
 		});
 	},
 	create: function(x, y, speed, owner) {
-		this.addComponent( 'Actor, Collision, Solid, spr_plasma' )
-		this.owner = owner
+		this.addComponent( 'Actor, Collision, Solid, spr_plasma, WiredHitBox' );
+		this.owner = owner;
 		this.attr({
 			x: x,
 			y: y,
@@ -240,7 +241,8 @@ Crafty.c('Plasma', {
 
 Crafty.c('Player', {
 	init: function() {
-		this.requires('Character, spr_player, Controls, Score');
+		this.requires('Character, spr_player_fixed, Controls, Score, WiredHitBox')
+		.crop(0,0,48,32);
 
 		var pcParticles = Crafty.e("Actor, Particles")
 		.particles(particleThrust);
@@ -263,8 +265,8 @@ Crafty.c('Player', {
 		
 
 		this.bind('EnterFrame', function(dt) {
-			pcParticles.x = this.x + 5.5;
-			pcParticles.y = this.y + 13;
+			pcParticles.x = this.x + 21.5;
+			pcParticles.y = this.y + 26;
 
 			pcScore.text(this.getScore());
 
