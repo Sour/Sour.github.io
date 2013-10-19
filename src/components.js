@@ -225,7 +225,8 @@ Crafty.c('Plasma', {
 		});
 	},
 	create: function(x, y, speed, owner) {
-		this.addComponent( 'Actor, Collision, Solid, spr_plasma, WiredHitBox' );
+		this.addComponent( 'Actor, Collision, Solid, spr_plasma' );
+		this.collision([5,4], [11,4], [11,12], [5,12]);
 		this.owner = owner;
 		this.attr({
 			x: x,
@@ -241,8 +242,8 @@ Crafty.c('Plasma', {
 
 Crafty.c('Player', {
 	init: function() {
-		this.requires('Character, spr_player_fixed, Controls, Score, WiredHitBox')
-		.crop(0,0,48,32);
+		this.requires('Character, spr_player_fixed, Controls, Score')
+		.collision([0,0], [48,0], [48,32], [0,32]);
 
 		var pcParticles = Crafty.e("Actor, Particles")
 		.particles(particleThrust);
