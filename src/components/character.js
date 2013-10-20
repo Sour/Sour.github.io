@@ -68,9 +68,75 @@ Crafty.c('Character', {
 	},
 });
 
-Crafty.c('Player', {
+Crafty.c('PlayerSingle', {
 	init: function() {
-		this.requires('Character, spr_player_fixed, Controls, Score');
+		this.requires('Character, spr_player_single, Controls, Score');
+
+		var pcParticles = Crafty.e("Actor, Particles")
+		.particles(particleThrust);
+
+		var pcScore = Crafty.e("2D, DOM, Text")
+		.attr({ x:0, y:0 })
+		.textFont({ size: '20px', weight: 'bold', align: 'center' });
+
+		Crafty.e('2D, DOM, Color')
+		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
+		.color('#ff5959');
+
+		var pcLifeBar = Crafty.e('2D, DOM, Color, Text')
+		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
+		.color('#63C788')
+		.text(this.getLife())
+		.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
+		.textFont({size:'12px', weight: 'bold'});
+
+		
+
+		this.bind('EnterFrame', function(dt) {
+			pcParticles.x = this.x + 21.5;
+			pcParticles.y = this.y + 26;
+
+			pcScore.text(this.getScore());
+
+			pcLifeBar.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: ((Game.map_grid.width * Game.map_grid.tile.width) * (this.getLife()) / 100), h:16 });
+			pcLifeBar.text(this.getLife());
+
+		});
+		this.onHit("Solid", function(hit) {
+			if(hit[0].obj.getName() == "enemy")
+			{
+				this.takeDamage(30);
+				hit[0].obj.takeDamage(100);
+			}
+			if(hit[0].obj.getName() == "health")
+			{
+				this.takeDamage(-10);
+				hit[0].obj.destroy();
+			}
+			if( !this.isAlive() ) {
+				this.particleDestroy();
+				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
+				pcParticles.destroy();
+				setTimeout(function() { Crafty.scene('GameOver'); }, 1500);
+			}
+		});
+
+		this.onHit("Wall", function(hit) {
+			for (var i = 0; i < hit.length; i++) {
+				if (hit[i].normal.x === 1) {
+					this.x = hit[i].obj.x + hit[i].obj.w;
+				}
+				if (hit[i].normal.x === -1) {
+					this.x = hit[i].obj.x - this.w;
+				}
+			}
+		});
+	},
+});
+
+Crafty.c('PlayerDual', {
+	init: function() {
+		this.requires('Character, spr_player_dual, Controls, Score');
 
 		var pcParticles = Crafty.e("Actor, Particles")
 		.particles(particleThrust);

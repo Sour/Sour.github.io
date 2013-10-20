@@ -24,7 +24,8 @@ Crafty.scene('Loading', function() {
     });
 
     Crafty.sprite(48, 32, 'assets/16x16.png', {
-    	spr_player_fixed: [0, 1]
+    	spr_player_dual:  [0, 1],
+      spr_player_single: [0, 2]
     });
 
     Crafty.scene('LevelOne');
@@ -33,9 +34,9 @@ Crafty.scene('Loading', function() {
 
 Crafty.scene('LevelOne', function() {
   //create boundries for canvas.
-  for (var x = -1; x <= Game.map_grid.width; x++) {
+  for (var x = -2; x <= Game.map_grid.width + 1; x++) {
   	for (var y = -1; y <= Game.map_grid.height; y++) {
-  		var at_edge = x == -1 || x == Game.map_grid.width || y == -1 || y == Game.map_grid.height;
+  		var at_edge = x == -2 || x == Game.map_grid.width + 1 || y == -2 || y == Game.map_grid.height + 1;
 
   		if (at_edge) {
   			Crafty.e('Wall').at(x, y);
@@ -44,11 +45,11 @@ Crafty.scene('LevelOne', function() {
   }
 
   // Create Player Object
-  Crafty.e('Player').at(14, 35);
+  Crafty.e('PlayerSingle').at(14, 35);
 
   var it = 0;
   //Create enemy spawns every xxxxms
-  Game.Delay = Crafty.e("Delay").delay(function() {
+  Game.gameDelay = Crafty.e("Delay").delay(function() {
   	Crafty.e('Enemy').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
   	console.log(it);
   	it++;
@@ -80,11 +81,11 @@ Crafty.scene('LevelTwo', function() {
   }
 
   // Create Player Object
-  Crafty.e('Player').at(15, 35);
+  Crafty.e('PlayerDual').at(15, 35);
 
   var it = 0;
   //Create enemy spawns every xxxxms
-  Game.Delay = Crafty.e("Delay").delay(function() {
+  Game.gameDelay = Crafty.e("Delay").delay(function() {
   	if( Math.random() < 0.2 ) {
   		Crafty.e('TierTwo').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
   	} else {

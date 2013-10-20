@@ -70,8 +70,12 @@ Crafty.c('Controls', {
 		.enableControl();
 		this.bind('KeyDown', function(e) {
 			if( e.key === 32 ) {
-				Crafty.e('Plasma').create( this.x, this.y  - 16, 3, this);
-				Crafty.e('Plasma').create( this.x + 32, this.y  - 16, 3, this);
+				if(!this.__c.PlayerSingle) {
+					Crafty.e('Plasma').create( this.x, this.y - 16, 3, this);
+					Crafty.e('Plasma').create( this.x + 32, this.y - 16, 3, this);
+				} else {
+					Crafty.e('Plasma').create( this.x + 16, this.y - 16, 3, this);
+				}
 			}
 		});
 	}

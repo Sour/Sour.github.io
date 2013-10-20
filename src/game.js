@@ -20,7 +20,8 @@ Game = {
 	start: function() {
 		Crafty.init(Game.width(), Game.height());
 		Crafty.background('rgb(50, 50, 50)');
-		var Delay;
+		var gameDelay;
+		var playerScore;
 		Crafty.scene('Loading');
 	}
 }
