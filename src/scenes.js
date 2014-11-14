@@ -14,24 +14,28 @@ Crafty.scene('Loading', function() {
     //load spritemap individually once they have loaded.
     Crafty.sprite(16, 'assets/16x16.png', {
     	spr_plasma_small:    [0, 0],
-    	spr_enemy_yellow:    [1, 0],
-    	spr_enemy_red:       [2, 0],
-    	spr_enemy_green:     [3, 0],
-      spr_laser:           [4, 0],
-      spr_coin_double:     [5, 0],
-    	spr_plasma_large:    [0, 1],
-    	spr_enemy_grey:      [1, 1],
-    	spr_life_orb:        [2, 1],
-    	spr_enemy_purple:    [3, 1],
-      spr_coin_single:     [4, 1],
-      spr_coin_triple:     [5, 1]
+    	spr_plasma_large:    [1, 0],
+    	spr_laser:           [2, 0],
+      spr_shield_orb:      [4, 0],
+      spr_life_orb:        [5, 0],
+      spr_ammo_orb:        [6, 0],
+    	spr_coin_small:      [7, 0],
+      spr_coin_medium:     [8, 0],
+      spr_coin_large:      [9, 0],
+      spr_enemy_purple:    [1, 1],
+    	spr_enemy_grey:      [2, 1],
+      spr_enemy_yellow:    [3, 1],
+      spr_enemy_red:       [4, 1],
+      spr_enemy_green:     [5, 1]
     });
 
     Crafty.sprite(48, 32, 'assets/16x16.png', {
-    	spr_player_dual:      [0, 1],
-      spr_player_dual_dmg:  [1, 1],
-      spr_player_single:    [0, 2],
-      spr_player_single_dmg:[1, 2]
+    	spr_player_dual:          [0, 1],
+      spr_player_single:        [0, 2],
+      spr_player_dual_shield:   [1, 1],
+      spr_player_single_shield: [1, 2],
+      spr_player_dual_power:    [2, 1],
+      spr_player_single_power:  [2, 2]
     });
 
     Crafty.scene('LevelOne');
@@ -76,14 +80,14 @@ Crafty.scene('LevelOne', function() {
 
 Crafty.scene('LevelTwo', function() {
   //create boundries for canvas.
-  for (var x = -2; x <= Game.map_grid.width + 1; x++) {
-    for (var y = -1; y <= Game.map_grid.height; y++) {
-      var at_edge = x == -2 || x == Game.map_grid.width + 1 || y == -2 || y == Game.map_grid.height + 1;
+  for (var x = -1; x <= Game.map_grid.width; x++) {
+  	for (var y = -1; y <= Game.map_grid.height; y++) {
+  		var at_edge = x == -1 || x == Game.map_grid.width || y == -1 || y == Game.map_grid.height;
 
-      if (at_edge) {
-        Crafty.e('Wall').at(x, y);
-      } 
-    }
+  		if (at_edge) {
+  			Crafty.e('Wall').at(x, y);
+  		} 
+  	}
   }
 
   // Create Player Object
