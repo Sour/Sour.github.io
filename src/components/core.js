@@ -54,7 +54,6 @@ Crafty.c('ItemDrop', {
 	dropItem: function() {
 		if( this.y < 350 ) {
 			var rand = Math.floor(Math.random() * 100)
-			console.log(this.weighed_list[rand]);
 			switch(this.weighed_list[rand]) {
 				case 'Life':
 					Crafty.e('LifeOrb').create(this.x, this.y);
@@ -148,6 +147,63 @@ Crafty.c('Score', {
 	},
 });
 
+Crafty.c('GUI', {
+	init: function() {
+		Crafty.e('2D, DOM, Color')
+		.attr({ 
+			x: 0, 
+			y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, 
+			w: (Game.map_grid.width * Game.map_grid.tile.width), 
+			h:16 
+		}).color('#ff5959');
+
+		lifeBar = Crafty.e('2D, DOM, Color')
+		.attr({ 
+			x: 0, 
+			y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, 
+			w: (Game.map_grid.width * Game.map_grid.tile.width), 
+			h:16 
+		}).color('#63C788');
+
+		life = Crafty.e("2D, DOM, Text")
+		.attr({ x:16, y:28 })
+		.textFont({ size: '16px', weight: 'bold', align: 'center' });
+
+		Crafty.e("2D, DOM, spr_life_orb")
+		.attr({ x:0, y:32});
+
+		score = Crafty.e("2D, DOM, Text")
+		.attr({ x:16, y:-3 })
+		.textFont({ size: '16px', weight: 'bold', align: 'center' });
+
+		Crafty.e("2D, DOM, spr_coin_small")
+		.attr({ x:0, y:0});
+
+		ammo = Crafty.e("2D, DOM, Text")
+		.attr({ x:16, y:12 })
+		.textFont({ size: '16px', weight: 'bold', align: 'center' });
+
+		Crafty.e("2D, DOM, spr_ammo_orb")
+		.attr({ x:0, y:16});
+	},
+	updateGUI: function() {
+		if(this.hasShield()) {
+			lifeBar.color('#1f7bad');
+		}else{
+			lifeBar.color('#63C788')
+		}
+		lifeBar.attr({ 
+			x: 0, 
+			y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, 
+			w: ((Game.map_grid.width * Game.map_grid.tile.width) * (this.getLife()) / 100), 
+			h:16 
+		});
+		ammo.text(this.getAmmo());
+		score.text(this.getScore());
+		life.text(this.getLife());
+	},
+});
+
 Crafty.c('Controls', {
 	init: function() {
 		this.requires('Multiway')
@@ -155,10 +211,10 @@ Crafty.c('Controls', {
 		.enableControl();
 		this.bind('KeyDown', function(e) {
 			if( e.key === 32 ) {
-				if(!this.__c.PlayerSingle) {
+				if(!this.__c.PlayerSingle && this.getAmmo() > 0) {
 					Crafty.e('Plasma').create( this.x, this.y - 16, 3, this);
 					Crafty.e('Plasma').create( this.x + 32, this.y - 16, 3, this);
-				} else {
+				} else if (this.getAmmo() > 0) {
 					Crafty.e('Plasma').create( this.x + 16, this.y - 16, 3, this);
 				}
 			}

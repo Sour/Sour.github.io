@@ -60,7 +60,7 @@ var particleDestory = {
 
 Crafty.c('Character', {
 	init: function() {
-		this.requires('Actor, Collision, Life, Shield')
+		this.requires('Actor, Collision, Life, Shield, Ammo')
 		.collision();
 	},
 	particleDestroy: function() {
@@ -70,49 +70,26 @@ Crafty.c('Character', {
 
 Crafty.c('PlayerSingle', {
 	init: function() {
-		this.requires('Character, spr_player_single, Controls, Score');
+		this.requires('Character, spr_player_single, Controls, Score, GUI');
 
 		var pcParticles = Crafty.e("Actor, Particles")
 		.particles(particleThrust);
 
-		var pcScore = Crafty.e("2D, DOM, Text")
-		.attr({ x:0, y:0 })
-		.textFont({ size: '20px', weight: 'bold', align: 'center' });
-
-		Crafty.e('2D, DOM, Color')
-		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
-		.color('#ff5959');
-
-		var pcLifeBar = Crafty.e('2D, DOM, Color, Text')
-		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
-		.color('#63C788');
-		//.text(this.getLife())
-		//.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
-		//.textFont({size:'12px', weight: 'bold'});
-
-		var pcLifeText = Crafty.e('2D, DOM, Text')
-		.attr({ x:0, y:0 })
-		.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
-		.textFont({ size: '12px', weight: 'bold', align: 'center' });
-		
-
 		this.bind('EnterFrame', function(dt) {
 			pcParticles.x = this.x + 21.5;
 			pcParticles.y = this.y + 26;
-
-			pcScore.text(this.getScore());
-
-			pcLifeBar.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: ((Game.map_grid.width * Game.map_grid.tile.width) * (this.getLife()) / 100), h:16 });
-			pcLifeText.text(this.getLife());
+			this.updateGUI();
 
 		});
+
 		this.onHit("Solid", function(hit) {
 			if(hit[0].obj.getName() == "enemy")
 			{
-				if(this.hasShield === false) {
+				if(this.hasShield()) {
+					this.removeShield();
+				}else{
 					this.takeDamage(30);
 				}
-				this.removeShield;
 				hit[0].obj.takeDamage(100);
 			}
 			if(hit[0].obj.getName() == "health")
@@ -143,46 +120,27 @@ Crafty.c('PlayerSingle', {
 
 Crafty.c('PlayerDual', {
 	init: function() {
-		this.requires('Character, spr_player_dual, Controls, Score');
+		this.requires('Character, GUI, spr_player_dual, Controls, Score');
 
 		var pcParticles = Crafty.e("Actor, Particles")
 		.particles(particleThrust);
 
-		var pcScore = Crafty.e("2D, DOM, Text")
-		.attr({ x:0, y:0 })
-		.textFont({ size: '20px', weight: 'bold', align: 'center' });
-
-		Crafty.e('2D, DOM, Color')
-		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
-		.color('#ff5959');
-
-		var pcLifeBar = Crafty.e('2D, DOM, Color, Text')
-		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
-		.color('#63C788');
-
-		var pcLifeText = Crafty.e('2D, DOM, Text')
-		.attr({ x:0, y: ((Game.map_grid.height * Game.map_grid.tile.height) - 16) })
-		.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
-		.textFont({ size: '12px', weight: 'bold', align: 'center' });
 		
 		this.bind('EnterFrame', function(dt) {
 			pcParticles.x = this.x + 21.5;
 			pcParticles.y = this.y + 26;
 
-			pcScore.text(this.getScore());
-
-			pcLifeBar.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: ((Game.map_grid.width * Game.map_grid.tile.width) * (this.getLife()) / 100), h:16 });
-			pcLifeText.text(this.getLife());
-
+			this.updateGUI();
 		});
 
 		this.onHit("Solid", function(hit) {
 			if(hit[0].obj.getName() == "enemy")
 			{
-				if(this.hasShield === false) {
+				if(this.hasShield()) {
+					this.removeShield();
+				}else{
 					this.takeDamage(30);
 				}
-				this.removeShield;
 				hit[0].obj.takeDamage(100);
 			}
 			if(hit[0].obj.getName() == "health")

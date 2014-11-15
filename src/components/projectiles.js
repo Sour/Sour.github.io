@@ -58,5 +58,7 @@ Crafty.c('Plasma', {
 		Crafty.e('Actor, Particles')
 		.particles(particlePlasma)
 		.attr({ x:x + 8, y:y + 12 });
+		this.owner.updateAmmo(-1);
+		
 	},
 });

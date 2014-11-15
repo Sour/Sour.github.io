@@ -38,7 +38,6 @@ Crafty.c('ShieldOrb', {
 
 		this.onHit('Life', function(hit) {
 			this.destroy();
-			console.log(hit[0]);
 			hit[0].obj.updateShield();
 		});
 		this.onHit('Wall', function(hit) {
@@ -99,7 +98,7 @@ Crafty.c('MediumCoin', {
 		});
 		this.onHit('Life', function(hit) {
 			this.destroy();
-			hit[0].obj.updateScore(100);
+			hit[0].obj.updateScore(200);
 		});
 		this.onHit('Wall', function(hit) {
 			this.destroy();
@@ -129,7 +128,7 @@ Crafty.c('LargeCoin', {
 		});
 		this.onHit('Life', function(hit) {
 			this.destroy();
-			hit[0].obj.updateScore(100);
+			hit[0].obj.updateScore(300);
 		});
 		this.onHit('Wall', function(hit) {
 			this.destroy();
