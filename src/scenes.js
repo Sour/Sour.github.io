@@ -66,12 +66,10 @@ Crafty.scene('LevelOne', function() {
   }, 1000, 24);
 
   setTimeout(function() {
-
   	Crafty.e('Grid, DOM, Text')
-	.text("You have survived level one!")
-	.attr({ x: 0, y: Game.height() / 2 - 24, w: Game.width() })
-	.css($text_css);
-
+	   .text("You have survived level one!")
+	   .attr({ x: 0, y: Game.height() / 2 - 24, w: Game.width() })
+	   .css($text_css);
   	setTimeout(function() { 
   		Crafty.scene('LevelTwo');
   	}, 5000);

@@ -220,7 +220,7 @@ Crafty.c('EnemyGrey', {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 				this.destroy();
-				this.dropItem(0.05, this.y);
+				this.dropItem();
 			}
 			if(this.isMoving == true) {
 				this.y += this.speed * dt.dt / 100;
@@ -247,7 +247,7 @@ Crafty.c('EnemyPurple', {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 				this.destroy();
-				this.dropItem(0.1, this.y);
+				this.dropItem();
 			}
 			if(this.isMoving == true) {
 				this.y += this.speed * dt.dt / 100;

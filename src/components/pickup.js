@@ -39,7 +39,7 @@ Crafty.c('ShieldOrb', {
 		this.onHit('Life', function(hit) {
 			this.destroy();
 			console.log(hit[0]);
-			hit[0].obj.obtainShield();
+			hit[0].obj.updateShield();
 		});
 		this.onHit('Wall', function(hit) {
 			this.destroy();
@@ -159,7 +159,7 @@ Crafty.c('AmmoOrb', {
 		});
 		this.onHit('Life', function(hit) {
 			this.destroy();
-			hit[0].obj.giveAmmo(25);
+			hit[0].obj.updateAmmo(25);
 		});
 		this.onHit('Wall', function(hit) {
 			this.destroy();

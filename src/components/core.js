@@ -31,15 +31,51 @@ Crafty.c('Wall', {
 
 Crafty.c('ItemDrop', {
 	init: function() {
+		this.list = [
+			['Life', 		.10],
+			['Shield', 		.10],
+			['CoinSmall' , 	.10],
+			['CoinMedium',	.05],
+			['CoinLarge',	.02],
+			['Ammo', 		.10],
+			['Nothing', 	.53]
+			];
+
+		this.weighed_list = [];
+
+		for(var i = 0; i < this.list.length; i++) {
+			var number = this.list[i][1] * 100;
+			for (var it = 0; it < number; it++) {
+				this.weighed_list.push(this.list[i][0]);
+			}
+		}
+
 	},
-	dropItem: function(rarity, y) {
-		if(y < 300) {
-			if(Math.random() < rarity) {
-				Crafty.e('LifeOrb').create(this.x,this.y);
-			}else if(Math.random() < rarity) {
-				Crafty.e('ShieldOrb').create(this.x,this.y);
-			}else if(Math.random() < rarity) {
-				Crafty.e('CoinOrb').create(this.x,this.y);
+	dropItem: function() {
+		if( this.y < 350 ) {
+			var rand = Math.floor(Math.random() * 100)
+			console.log(this.weighed_list[rand]);
+			switch(this.weighed_list[rand]) {
+				case 'Life':
+					Crafty.e('LifeOrb').create(this.x, this.y);
+					break;
+				case 'Shield':
+					Crafty.e('ShieldOrb').create(this.x, this.y);
+					break;
+				case 'CoinSmall':
+					Crafty.e('SmallCoin').create(this.x, this.y);
+					break;
+				case 'CoinMedium':
+					Crafty.e('MediumCoin').create(this.x, this.y);
+					break;
+				case 'CoinLarge':
+					Crafty.e('LargeCoin').create(this.x, this.y);
+					break;
+				case 'Ammo':
+					Crafty.e('AmmoOrb').create(this.x, this.y);
+					break;
+				default:
+					break;
 			}
 		}
 	},
@@ -79,13 +115,25 @@ Crafty.c('Shield', {
 	hasShield: function() {
 		return this.shield;
 	},
-	obtainShield: function() {
+	updateShield: function() {
 		this.shield = true;
 	},
 	removeShield: function() {
 		this.shield = false;
 	},
 
+});
+
+Crafty.c('Ammo', {
+	init: function() {
+		this.ammo = 100;
+	},
+	updateAmmo: function(ammo) {
+		this.ammo += ammo;
+	},
+	getAmmo: function() {
+		return this.ammo;
+	},
 });
 
 Crafty.c('Score', {
