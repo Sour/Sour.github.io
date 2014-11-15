@@ -60,7 +60,7 @@ Crafty.scene('LevelOne', function() {
   var it = 0;
   //Create enemy spawns every xxxxms
   Game.gameDelay = Crafty.e("Delay").delay(function() {
-  	Crafty.e('Enemy').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
+  	Crafty.e('EnemyGrey').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
   	console.log(it);
   	it++;
   }, 1000, 24);
@@ -97,9 +97,9 @@ Crafty.scene('LevelTwo', function() {
   //Create enemy spawns every xxxxms
   Game.gameDelay = Crafty.e("Delay").delay(function() {
   	if( Math.random() < 0.2 ) {
-  		Crafty.e('TierTwo').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
+  		Crafty.e('EnemyPurple').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
   	} else {
-  		Crafty.e('Enemy').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
+  		Crafty.e('EnemyGrey').at( Math.floor( Math.random() * 30 ), 0 ).setName("enemy");
   	}
   	
   	console.log(it);

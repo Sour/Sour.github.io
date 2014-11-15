@@ -30,8 +30,9 @@ var particlePlasma = {
 Crafty.c('Plasma', {
 	init: function() {
 		this.requires('Collision');
+		this.speed = 50;
 		this.bind('EnterFrame', function(dt) {
-			this.y -= dt.dt / 5
+			this.y -= this.speed * dt.dt / 100
 		});
 		this.onHit('Life', function(hit) {
 			this.destroy();

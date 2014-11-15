@@ -60,7 +60,7 @@ Crafty.c('ShieldOrb', {
 	},
 });
 
-Crafty.c('Coin', {
+Crafty.c('SmallCoin', {
 	init: function() {
 		this.requires('Collision')
 		.collision();
@@ -77,7 +77,7 @@ Crafty.c('Coin', {
 	},
 	create: function(x, y) {
 		this.addComponent( 'Actor, Collision, Solid, spr_coin_small' )
-		.name = "coin";
+		.name = "smallcoin";
 		this.attr({ 
 			x: x,
 			y: y,
@@ -90,7 +90,67 @@ Crafty.c('Coin', {
 	},
 });
 
-Crafty.c('Ammo', {
+Crafty.c('MediumCoin', {
+	init: function() {
+		this.requires('Collision')
+		.collision();
+		this.bind('EnterFrame', function(dt) {
+			this.y += dt.dt / 15;
+		});
+		this.onHit('Life', function(hit) {
+			this.destroy();
+			hit[0].obj.updateScore(100);
+		});
+		this.onHit('Wall', function(hit) {
+			this.destroy();
+		});
+	},
+	create: function(x, y) {
+		this.addComponent( 'Actor, Collision, Solid, spr_coin_medium' )
+		.name = "mediumcoin";
+		this.attr({ 
+			x: x,
+			y: y,
+			w: Game.map_grid.tile.width,
+			h: Game.map_grid.tile.height
+		});
+	},
+	getName: function() {
+		return this.name;
+	},
+});
+
+Crafty.c('LargeCoin', {
+	init: function() {
+		this.requires('Collision')
+		.collision();
+		this.bind('EnterFrame', function(dt) {
+			this.y += dt.dt / 15;
+		});
+		this.onHit('Life', function(hit) {
+			this.destroy();
+			hit[0].obj.updateScore(100);
+		});
+		this.onHit('Wall', function(hit) {
+			this.destroy();
+		});
+	},
+	create: function(x, y) {
+		this.addComponent( 'Actor, Collision, Solid, spr_coin_large' )
+		.name = "largecoin";
+		this.attr({ 
+			x: x,
+			y: y,
+			w: Game.map_grid.tile.width,
+			h: Game.map_grid.tile.height
+		});
+	},
+	getName: function() {
+		return this.name;
+	},
+});
+
+Crafty.c('AmmoOrb', {
 	init: function() { 
 		this.requires('Collision')
 		.collision();

@@ -29,6 +29,22 @@ Crafty.c('Wall', {
 	},
 });
 
+Crafty.c('ItemDrop', {
+	init: function() {
+	},
+	dropItem: function(rarity, y) {
+		if(y < 300) {
+			if(Math.random() < rarity) {
+				Crafty.e('LifeOrb').create(this.x,this.y);
+			}else if(Math.random() < rarity) {
+				Crafty.e('ShieldOrb').create(this.x,this.y);
+			}else if(Math.random() < rarity) {
+				Crafty.e('CoinOrb').create(this.x,this.y);
+			}
+		}
+	},
+})
+
 Crafty.c('Life', {
 	init: function() {
 		this.life = 100;

@@ -159,12 +159,9 @@ Crafty.c('PlayerDual', {
 		var pcLifeBar = Crafty.e('2D, DOM, Color, Text')
 		.attr({ x: 0, y: (Game.map_grid.height * Game.map_grid.tile.height) - 16, w: (Game.map_grid.width * Game.map_grid.tile.width), h:16 })
 		.color('#63C788');
-		//.text(this.getLife())
-		//.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
-		//.textFont({size:'12px', weight: 'bold'});
 
 		var pcLifeText = Crafty.e('2D, DOM, Text')
-		.attr({ x:0, y:0 })
+		.attr({ x:0, y: ((Game.map_grid.height * Game.map_grid.tile.height) - 16) })
 		.css({"font-size":"20px","text-align":"center","display":"inline-block","vertical-align":"middle"})
 		.textFont({ size: '12px', weight: 'bold', align: 'center' });
 		
@@ -214,26 +211,19 @@ Crafty.c('PlayerDual', {
 	},
 });
 
-Crafty.c('Enemy', {
+Crafty.c('EnemyGrey', {
 	init: function() {
-		this.requires('Character, spr_enemy_grey, Solid');
+		this.requires('Character, spr_enemy_grey, Solid, ItemDrop');
 		this.isMoving = true;
+		this.speed = 10;
 		this.bind('EnterFrame', function(dt) {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 				this.destroy();
-				//if(this.y < 300){
-					//if(Math.random() < 0.05) {
-						//Crafty.e('LifeOrb').create(this.x,this.y);
-					//}else if(Math.random() < 0.05) {
-						//Crafty.e('ShieldOrb').create(this.x,this.y);
-					//}else if(Math.random() < 0.05) {
-						Crafty.e('Coin').create(this.x,this.y);
-					//}
-				//}
+				this.dropItem(0.05, this.y);
 			}
 			if(this.isMoving == true) {
-				this.y += 16 * dt.dt / 100;
+				this.y += this.speed * dt.dt / 100;
 			}
 		});
 		this.onHit('Wall', function() {
@@ -243,30 +233,24 @@ Crafty.c('Enemy', {
 	setName: function(name) {
 		this.name = name;
 	},
-
 	getName: function() {
 		return this.name;
 	},
 });
 
-Crafty.c('TierTwo', {
+Crafty.c('EnemyPurple', {
 	init: function() {
-		this.requires('Character, spr_enemy_purple, Solid');
+		this.requires('Character, spr_enemy_purple, Solid, ItemDrop');
 		this.isMoving = true;
+		this.speed = 25;
 		this.bind('EnterFrame', function(dt) {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
 				this.destroy();
-				if(Math.random() < 0.1) {
-					Crafty.e('LifeOrb').create(this.x,this.y);
-				}else if(Math.random() < 0.1) {
-					Crafty.e('ShieldOrb').create(this.x,this.y);
-				}else if(Math.random() < 0.1) {
-					Crafty.e('Coin').create(this.x,this.y);
-				}
+				this.dropItem(0.1, this.y);
 			}
 			if(this.isMoving == true) {
-				this.y += 25 * dt.dt / 100;
+				this.y += this.speed * dt.dt / 100;
 			}
 		});
 		this.onHit('Wall', function() {
@@ -276,7 +260,6 @@ Crafty.c('TierTwo', {
 	setName: function(name) {
 		this.name = name;
 	},
-
 	getName: function() {
 		return this.name;
 	},
