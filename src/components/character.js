@@ -173,7 +173,6 @@ Crafty.c('EnemyGrey', {
 	init: function() {
 		this.requires('Character, spr_enemy_grey, Solid, ItemDrop');
 		this.isMoving = true;
-		this.speed = 10;
 		this.bind('EnterFrame', function(dt) {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
@@ -181,8 +180,9 @@ Crafty.c('EnemyGrey', {
 				this.dropItem();
 			}
 			if(this.isMoving == true) {
-				this.y += this.speed * dt.dt / 100;
+				this.y += 10 * dt.dt / 100;
 			}
+			//this.updateLifeBar();
 		});
 		this.onHit('Wall', function() {
 			this.destroy();
@@ -200,7 +200,6 @@ Crafty.c('EnemyPurple', {
 	init: function() {
 		this.requires('Character, spr_enemy_purple, Solid, ItemDrop');
 		this.isMoving = true;
-		this.speed = 25;
 		this.bind('EnterFrame', function(dt) {
 			if(!this.isAlive()) {
 				Crafty.e('Actor, Particles').particles(particleDestory).at( Math.floor( this.x / Game.map_grid.tile.width ), Math.floor( this.y / Game.map_grid.tile.height ) );
@@ -208,7 +207,7 @@ Crafty.c('EnemyPurple', {
 				this.dropItem();
 			}
 			if(this.isMoving == true) {
-				this.y += this.speed * dt.dt / 100;
+				this.y += 25 * dt.dt / 100;
 			}
 		});
 		this.onHit('Wall', function() {

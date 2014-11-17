@@ -204,6 +204,40 @@ Crafty.c('GUI', {
 	},
 });
 
+Crafty.c('LifeBar', {
+	init: function() {
+		lifeBarBackground = Crafty.e('2D, DOM, Color')
+		.attr({ 
+			x: this.x, 
+			y: this.y - 2, 
+			w: 16, 
+			h: 2 
+		}).color('#ff5959');
+
+		lifeBar = Crafty.e('2D, DOM, Color')
+		.attr({ 
+			x: this.x, 
+			y: this.y - 2, 
+			w: 16, 
+			h: 2 
+		}).color('#63C788');
+	},
+	updateLifeBar: function() {
+		lifeBarBackground.attr({ 
+			x: this.x, 
+			y: this.y - 2, 
+			w: 16, 
+			h: 2 
+		});
+		lifeBar.attr({ 
+			x: this.x, 
+			y: this.y - 2, 
+			w: (100 / this.getLife()) * 16, 
+			h: 2 
+		})
+	},
+});
+
 Crafty.c('Controls', {
 	init: function() {
 		this.requires('Multiway')
