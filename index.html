@@ -1,38 +1,119 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<script src="lib/crafty.js"></script>
-	<script src="src/game.js"></script>
-	<script src="src/components/core.js"></script>
-	<script src="src/scenes.js"></script>
-	<script src="src/components/character.js"></script>
-	<script src="src/components/projectiles.js"></script>
-	<script src="src/components/pickup.js"></script>
-	<script>
-	window.addEventListener('load', Game.start);
-	</script>
-	<style type="text/css" media="screen">
-	body {
-		background: black;
-		text-align: center;
-		color: #FFF;
-	}
+  <head>
+    <title>Geolocation</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="control">
+        <button onclick="logLocation()">Log Current Location</button>
+    </div>
+    <script>
+      // Note: This example requires that you consent to location sharing when
+      // prompted by your browser. If you see the error "The Geolocation service
+      // failed.", it means you probably did not give permission for the browser to
+      // locate you.
+      var positions;
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 6
+        });
+        var infoWindow = new google.maps.InfoWindow({map: map});
 
-	.controls {
-		color: #BBB;
-	}
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
 
-	#cr-stage { 
-		margin: 20px auto 0; 
-	}
-	</style>
-</head>
-<body>
-	<h2>Leechy.INFO</h2>
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Location found.');
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+      }
 
-	<p class="controls">Controls: Use A and D or Left and Right to move and SPACE to fire.</p>
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+      }
+    function logLocation(){
+        navigator.geolocation.getCurrentPosition(function(position){
+            pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 20,
+                center: pos
+            });
+            marker = new google.maps.Marker({
+                position: pos, 
+                map: map
+            })
+            if(document.getElementById("myTable") == null) {
+                var x = document.createElement("TABLE");
+                x.setAttribute("id", "myTable");
+                document.body.appendChild(x);
 
-	<div id="cr-stage"></div>
+                var y = document.createElement("TR");
+                y.setAttribute("id", "myTr");
+                document.getElementById("myTable").appendChild(y);
 
-</body>
+                var z = document.createElement("TD");
+                var cell = document.createTextNode("lat:" + position.coords.latitude.toString());
+                console.log(position.coords.latitude);
+                z.appendChild(cell);
+                var cell = document.createTextNode(" lng:" + position.coords.longitude.toString());
+                z.appendChild(cell);
+                document.getElementById("myTr").appendChild(z);
+            }
+            else
+            {
+                var len = document.getElementById("myTable").childNodes.length
+
+                var y = document.createElement("TR");
+                y.setAttribute("id", "myTr" + len);
+                document.getElementById("myTable").appendChild(y);
+
+                var td = document.createElement("TD");
+                var cell = document.createTextNode("lat:" + position.coords.latitude.toString());
+                td.appendChild(cell);
+                var cell = document.createTextNode(" lng:" + position.coords.longitude.toString());
+                td.appendChild(cell);
+                document.getElementById("myTr" + len).appendChild(td);
+        }
+
+        });
+    }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7LUMK12ueqkPJjmkkwFNzmR5AnOTUXa8&callback=initMap">
+    </script>
+  </body>
 </html>
