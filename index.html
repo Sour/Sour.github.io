@@ -22,19 +22,21 @@
     <div id="map"></div>
     <div id="control">
         <button onclick="logLocation()">Log Current Location</button>
+        <button onclick="saveToFile()">Save logged positions</button>
     </div>
+    <script src="FileSaver.js"></script>
     <script>
       // Note: This example requires that you consent to location sharing when
       // prompted by your browser. If you see the error "The Geolocation service
       // failed.", it means you probably did not give permission for the browser to
       // locate you.
-      var positions;
+      var _map;
       function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 6
+         _map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 0, lng: 0},
+          zoom: 15
         });
-        var infoWindow = new google.maps.InfoWindow({map: map});
+        var infoWindow = new google.maps.InfoWindow({map: _map});
 
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
@@ -45,14 +47,14 @@
             };
 
             infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
-            map.setCenter(pos);
+            infoWindow.setContent('Current Location.');
+            _map.setCenter(pos);
           }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
+            handleLocationError(true, infoWindow, _map.getCenter());
           });
         } else {
           // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
+          handleLocationError(false, infoWindow, _map.getCenter());
         }
       }
 
@@ -68,14 +70,11 @@
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 20,
-                center: pos
-            });
-            marker = new google.maps.Marker({
+            new google.maps.Marker({
                 position: pos, 
-                map: map
+                map: _map
             })
+
             if(document.getElementById("myTable") == null) {
                 var x = document.createElement("TABLE");
                 x.setAttribute("id", "myTable");
@@ -86,10 +85,13 @@
                 document.getElementById("myTable").appendChild(y);
 
                 var z = document.createElement("TD");
-                var cell = document.createTextNode("lat:" + position.coords.latitude.toString());
+                var cell = document.createTextNode(position.coords.latitude.toString());
                 console.log(position.coords.latitude);
                 z.appendChild(cell);
-                var cell = document.createTextNode(" lng:" + position.coords.longitude.toString());
+                document.getElementById("myTr").appendChild(z);
+
+                var z = document.createElement("TD");
+                var cell = document.createTextNode(position.coords.longitude.toString());
                 z.appendChild(cell);
                 document.getElementById("myTr").appendChild(z);
             }
@@ -102,18 +104,41 @@
                 document.getElementById("myTable").appendChild(y);
 
                 var td = document.createElement("TD");
-                var cell = document.createTextNode("lat:" + position.coords.latitude.toString());
+                var cell = document.createTextNode(position.coords.latitude.toString());
                 td.appendChild(cell);
-                var cell = document.createTextNode(" lng:" + position.coords.longitude.toString());
+                document.getElementById("myTr" + len).appendChild(td);
+                
+                var td = document.createElement("TD");
+                var cell = document.createTextNode(position.coords.longitude.toString());
                 td.appendChild(cell);
                 document.getElementById("myTr" + len).appendChild(td);
         }
-
         });
     }
+    function saveToFile() {
+          var string;
+          var table = document.getElementById("myTable");
+          var rows = table.rows.length;
+          for(i = 0; i < rows; i++) {
+            var cells = table.rows.item(i).cells;
+            var columns = cells.length;
+            for(j = 0; j < columns; j++) {
+              if(cells[j].innerText != undefined){
+                string += cells[j].innerText + ",";
+              }
+            } 
+          }
+
+          console.log(string)
+          var blob = new Blob([string],{type: "text/plain;charset=utf-8"});
+          saveAs(blob, "log.csv");
+
+
+        }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCL-wOojRsgmVt5MDLL9QL7Byjo6faRvVM&callback=initMap">
     </script>
+    
   </body>
 </html>
